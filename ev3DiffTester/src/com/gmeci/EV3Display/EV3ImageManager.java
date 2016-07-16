@@ -28,8 +28,8 @@ public class EV3ImageManager {
 	BufferedImage largeMotorOffImage, mediumOffImage, steerOffImage, tankOffImage;
 	BufferedImage largeMotorOnImage, mediumOnImage, steerOnImage,tankOnImage;
 	BufferedImage largeMotorTimeImage, mediumTimeImage, steerTimeImage, tankTimeImage ;
-	BufferedImage loopLeftImage, loopTimeCompareImage, loopInfiniteImage,loopButtonCompareImage;
-	BufferedImage wait_color,interrupt,wait_button;
+	BufferedImage loopLeftImage, loopTimeCompareImage, loopInfiniteImage,loopButtonCompareImage,loopColorCompareImage,loopGyroAngleCompareImage,loopGyroRateCompareImage,loopLightCompareImage;
+	BufferedImage wait_color,interrupt,wait_button,wait_GyroAngle,wait_light,wait_GyroRate;
 	
 	HashMap<String, BufferedImage> ImageNameMap = new HashMap<String, BufferedImage>();
 	
@@ -132,11 +132,51 @@ public class EV3ImageManager {
 			ImageNameMap.put(EV3Program.LOOP_TIME_COMPARE, loopTimeCompareImage);	
 			loopButtonCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_buttons.PNG" ));
 			ImageNameMap.put("ButtonCompare"+LOOP, loopButtonCompareImage);	
+			loopColorCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_color.PNG" ));
+			ImageNameMap.put("ColorCompare"+LOOP, loopColorCompareImage);
+			loopGyroAngleCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_angle.PNG" ));
+			ImageNameMap.put("GyroAngleCompare"+LOOP, loopGyroAngleCompareImage);	
+			loopGyroRateCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_rate.PNG" ));
+			ImageNameMap.put("GyroRateCompare"+LOOP, loopGyroRateCompareImage);	
+			loopLightCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_light.PNG" ));
+			ImageNameMap.put("ColorReflectedIntensityCompare"+LOOP, loopLightCompareImage);	
+			BufferedImage loopTouchCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_touch.PNG" ));
+			ImageNameMap.put("TouchCompare"+LOOP, loopTouchCompareImage);	
+			BufferedImage loopMotorRotationCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_motor_rotation.PNG" ));
+			ImageNameMap.put("RotationDegreesCompare"+LOOP, loopMotorRotationCompareImage);	
+			BufferedImage loopUltrasonicCMImage = ImageIO.read(getClass().getResource( "/resources/loop_right_ultrasonic.PNG" ));
+			ImageNameMap.put("DistanceCMCompare"+LOOP, loopUltrasonicCMImage);	
+			BufferedImage loopMotorRotationRotationsCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_rotations_rotations.PNG" ));
+			ImageNameMap.put("RotationRotationsCompare"+LOOP, loopMotorRotationRotationsCompareImage);
+			BufferedImage loopCountImage = ImageIO.read(getClass().getResource( "/resources/loop_right_count.PNG" ));
+			ImageNameMap.put("StopAfterNumberIterations"+LOOP, loopCountImage);	
+			BufferedImage loopUltrasonicINImage = ImageIO.read(getClass().getResource( "/resources/loop_right_distance_in.PNG" ));
+			ImageNameMap.put("DistanceInchesCompare"+LOOP, loopUltrasonicINImage);
+			
 
-			wait_color = ImageIO.read(getClass().getResource( "/resources/color_compare.PNG" ));
-			ImageNameMap.put("ColorCompare", wait_color);	
+			wait_color = ImageIO.read(getClass().getResource( "/resources/wait_color_compare.PNG" ));
+			ImageNameMap.put("ColorCompare"+WAIT, wait_color);	
 			wait_button = ImageIO.read(getClass().getResource( "/resources/wait_button.PNG" ));
 			ImageNameMap.put("ButtonCompare"+WAIT, wait_button);	
+			wait_GyroAngle = ImageIO.read(getClass().getResource( "/resources/wait_gyro_angle.PNG" ));
+			ImageNameMap.put("GyroAngleCompare"+WAIT, wait_GyroAngle);	
+			wait_light = ImageIO.read(getClass().getResource( "/resources/wait_gyro_angle.PNG" ));
+			ImageNameMap.put("ColorReflectedIntensityCompare"+WAIT, wait_light);	
+			wait_GyroRate = ImageIO.read(getClass().getResource( "/resources/wait_gyro_angle.PNG" ));
+			ImageNameMap.put("DeltaWaitGyroRate"+WAIT, wait_GyroRate);	
+			BufferedImage wait_touch = ImageIO.read(getClass().getResource( "/resources/wait_touch.PNG" ));
+			ImageNameMap.put("TouchCompare"+WAIT,wait_touch);	
+			BufferedImage wait_motor_rotation = ImageIO.read(getClass().getResource( "/resources/wait_motor_rotation.PNG" ));
+			ImageNameMap.put("RotationDegreesCompare"+WAIT, wait_motor_rotation);	
+			BufferedImage wait_ultrasonic_cm = ImageIO.read(getClass().getResource( "/resources/wait_ultrasonic_cm.PNG" ));
+			ImageNameMap.put("DistanceCMCompare"+WAIT,wait_ultrasonic_cm);	
+			BufferedImage wait_motor_rotation_rotation = ImageIO.read(getClass().getResource( "/resources/wait_motor_rotation.PNG" ));
+			ImageNameMap.put("RotationRotationsCompare"+WAIT, wait_motor_rotation_rotation);	
+			BufferedImage wait_time = ImageIO.read(getClass().getResource( "/resources/wait_time.PNG" ));
+			ImageNameMap.put("TimeCompare"+WAIT,wait_time);	
+			BufferedImage wait_distance_inches = ImageIO.read(getClass().getResource( "/resources/wait_ultrasonic_in.PNG" ));
+			ImageNameMap.put("DistanceInchesCompare"+WAIT, wait_distance_inches);	
+			
 			
 			interrupt = ImageIO.read(getClass().getResource( "/resources/interrupt.PNG" ));
 			ImageNameMap.put(TOGGLE_INTERRUPT, interrupt);	
@@ -160,12 +200,55 @@ public class EV3ImageManager {
 
 			Red_VariableSet = ImageIO.read(getClass().getResource( "/resources/variable_setSingle.PNG" ));
 			ImageNameMap.put("GlobalSetSingle", Red_VariableSet);	
+			BufferedImage RedGetString  = ImageIO.read(getClass().getResource( "/resources/var_get_string.PNG" ));
+			ImageNameMap.put("GlobalGetString", RedGetString);
+			BufferedImage RedGetSingle  = ImageIO.read(getClass().getResource( "/resources/var_get_number.PNG" ));
+			ImageNameMap.put("GlobalGetSingle", RedGetSingle);
+			BufferedImage RedGetBoolean  = ImageIO.read(getClass().getResource( "/resources/var_get_bool.PNG" ));
+			ImageNameMap.put("GlobalGetBoolean", RedGetBoolean);
+			BufferedImage RedSetString  = ImageIO.read(getClass().getResource( "/resources/var_set_string.PNG" ));
+			ImageNameMap.put("GlobalSetString", RedSetString);
+			BufferedImage RedSetBoolean  = ImageIO.read(getClass().getResource( "/resources/var_set_bool.PNG" ));
+			ImageNameMap.put("GlobalSetBoolean", RedSetBoolean);
+
+			
+
 			Red_ConstanteRead = ImageIO.read(getClass().getResource( "/resources/variable_setSingle.PNG" ));
 			ImageNameMap.put("GlobalConstSingle", Red_ConstanteRead);		
+			BufferedImage Red_ConstanteBoolean = ImageIO.read(getClass().getResource( "/resources/const_bool.PNG" ));
+			ImageNameMap.put("GlobalConstBoolean", Red_ConstanteBoolean);		
+			BufferedImage Red_ConstanteString = ImageIO.read(getClass().getResource( "/resources/const_string.PNG" ));
+			ImageNameMap.put("GlobalConstString", Red_ConstanteString);		
+			
 			Red_MathAdd = ImageIO.read(getClass().getResource( "/resources/arithmetic_add.PNG" ));
-			ImageNameMap.put("Arithmetic_Add", Red_MathAdd);			
+			ImageNameMap.put("Arithmetic_Add", Red_MathAdd);	
+			BufferedImage RedMult  = ImageIO.read(getClass().getResource( "/resources/arithmetic_multiply.PNG" ));
+			ImageNameMap.put("Arithmetic_Multiply", RedMult);	
+			BufferedImage RedDiv  = ImageIO.read(getClass().getResource( "/resources/arithmetic_divide.PNG" ));
+			ImageNameMap.put("Arithmetic_Divide", RedDiv);
+			BufferedImage RedSub  = ImageIO.read(getClass().getResource( "/resources/arithmetic_subtract.PNG" ));
+			ImageNameMap.put("Arithmetic_Subtract", RedSub);
+			BufferedImage RedAbs  = ImageIO.read(getClass().getResource( "/resources/arithmetic_abs.PNG" ));
+			ImageNameMap.put("Arithmetic_AbsoluteValue", RedAbs);
+			BufferedImage RedSqrt  = ImageIO.read(getClass().getResource( "/resources/arithmetic_sqrt.PNG" ));
+			ImageNameMap.put("Arithmetic_SquareRoot", RedSqrt);
+			BufferedImage RedPow  = ImageIO.read(getClass().getResource( "/resources/arithmetic_pow.PNG" ));
+			ImageNameMap.put("Arithmetic_Power", RedPow);
+
+			
+
 			Red_CompareEquals = ImageIO.read(getClass().getResource( "/resources/compare_equals.PNG" ));
 			ImageNameMap.put("Comparison_Equal", Red_CompareEquals);	
+			BufferedImage Red_CompareNotEquals = ImageIO.read(getClass().getResource( "/resources/compare_notequals.PNG" ));
+			ImageNameMap.put("Comparison_NotEqual", Red_CompareNotEquals);	
+			BufferedImage Red_CompareLess = ImageIO.read(getClass().getResource( "/resources/compare_less.PNG" ));
+			ImageNameMap.put("Comparison_Less", Red_CompareLess);	
+			BufferedImage Red_CompareGreater = ImageIO.read(getClass().getResource( "/resources/compare_greater.PNG" ));
+			ImageNameMap.put("Comparison_Greater", Red_CompareGreater);	
+			BufferedImage Red_CompareGreaterEqual = ImageIO.read(getClass().getResource( "/resources/compare_greaterequals.PNG" ));
+			ImageNameMap.put("Comparison_GreaterEqual", Red_CompareGreaterEqual);	
+			BufferedImage Red_CompareLessEqual = ImageIO.read(getClass().getResource( "/resources/compare_lessequals.PNG" ));
+			ImageNameMap.put("Comparison_LessEqual", Red_CompareLessEqual);	
 			
 
 			Blue_ReverseMotor = ImageIO.read(getClass().getResource( "/resources/reverse_motor.PNG" ));
@@ -233,6 +316,9 @@ public class EV3ImageManager {
 		PanOffsetX+= p.x-MouseDownStart.x;
 		PanOffsetY+= p.y-MouseDownStart.y;
 		
+		MouseDownStart.x = p.x;
+		MouseDownStart.y = p.y;
+		System.out.println("panning "+ PanOffsetX+" "+PanOffsetY);
 	}
 
 

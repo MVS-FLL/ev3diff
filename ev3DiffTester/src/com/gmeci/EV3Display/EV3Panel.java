@@ -130,7 +130,7 @@ public class EV3Panel extends JPanel {
 			}
 
 			System.out.println("Target Name "+ TargetName);
-			
+			int RightImageWidth=0;
 			if(!ev3im.imageAvailable(TargetName))
 			{
 				if(TargetName.contains(EV3Program.MY_BLOCK_SUFFIX))
@@ -167,7 +167,7 @@ public class EV3Panel extends JPanel {
 					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset)))); 
 					//					//need a right side also...
 					BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
-					int RightImageWidth = newImage2Draw2.getWidth();
+					RightImageWidth = newImage2Draw2.getWidth();
 					g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
 
 					//put the interrupt name in the middle???
@@ -191,7 +191,7 @@ public class EV3Panel extends JPanel {
 					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset-24)))); 
 					//					//need a right side also...
 					BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
-					int RightImageWidth = newImage2Draw2.getWidth();
+					RightImageWidth = newImage2Draw2.getWidth();
 					g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
 
 					//put the interrupt name in the middle???
@@ -217,8 +217,8 @@ public class EV3Panel extends JPanel {
 						g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset-24)))); 
 						//					//need a right side also...
 						BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
-						int RightImageWidth = newImage2Draw2.getWidth();
-						g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
+						RightImageWidth = newImage2Draw2.getWidth();
+						g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset+20)))); // see javadoc for more info on the parameters 
 
 						//put the interrupt name in the middle???
 						g2d.drawString(block.interrupt,(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
@@ -227,7 +227,7 @@ public class EV3Panel extends JPanel {
 						TerminalItem LongItem = GetTerminalListItemValue(block.terminalItems, EV3Program.HOW_LONG);
 						if(LongItem!= null)
 						{
-							g2d.drawString(LongItem.ConfiguredValue, (int)(Scale*(block.Bound[0]+ + block.Bound[2]+XOffset+LOOP_TIMER_OFFSET_X)),(int) ( RealStretch* (Scale*(  LongItem.Bound[1]+YOffset- LOOP_OFFSET_Y))));
+							g2d.drawString(LongItem.ConfiguredValue, (int)(Scale*(block.Bound[0]+  block.Bound[2]+XOffset+LOOP_TIMER_OFFSET_X)),(int) ( RealStretch* (Scale*(  LongItem.Bound[1]+YOffset- LOOP_OFFSET_Y))));
 						}
 					}
 					else
@@ -271,6 +271,14 @@ public class EV3Panel extends JPanel {
 						offsetX += 60;
 					}
 					else offsetY += 20;
+					if(block.Modifier.equals(EV3ImageManager.LOOP))
+					{
+						offsetX += (Scale* ( block.Bound[2]-RightImageWidth));//this gets added in when drawing the string:block.Bound[0]
+						offsetY = 50;
+						
+					}
+					else
+						offsetY = 0;
 //System.out.println("ID "+terminal.ID+ " value:"+terminal.ConfiguredValue);
 					String Text2Show = terminal.ConfiguredValue.replace("1.","");
 					if(Text2Show.equals("3"))
@@ -280,6 +288,14 @@ public class EV3Panel extends JPanel {
 					else if(terminal.ConfiguredValue.equals("False"))
 						Text2Show=" X";
 
+					if(terminal.ID.equals("LoopIterationCount")&& terminal.Bound[0] ==0)
+						continue;
+					if(terminal.ConfiguredValue==null )
+						continue;
+
+					if(terminal.ID.equals("Result") && terminal.Bound[0] == 0 )
+						continue;
+					
 					Font oldFont=null;
 					if(terminal.changed)
 					{
@@ -288,7 +304,7 @@ public class EV3Panel extends JPanel {
 						g2d.setColor(Color.RED);
 					}
 
-					g2d.drawString(Text2Show, (int)(Scale*(terminal.Bound[0]+ block.Bound[0]+ offsetX)), (RealStretch* YOffset)+terminal.Bound[1]+(int)(RealStretch*(Scale*(15+block.Bound[1]))));
+					g2d.drawString(Text2Show, (int)(Scale*(terminal.Bound[0]+ block.Bound[0]+ offsetX)), (RealStretch* YOffset)+terminal.Bound[1]+(int)(RealStretch*(Scale*(15+block.Bound[1])+ offsetY)));
 
 					if(terminal.changed)
 					{
