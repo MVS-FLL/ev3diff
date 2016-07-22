@@ -118,7 +118,7 @@ public class EV3Panel extends JPanel {
 			TargetName = TargetName.replace("\\\\.vix", "");
 			TargetName = TargetName.replace(".\\vix", "");
 			TargetName = TargetName.replace("X3\\.Lib:", "");
-		//	TargetName = TargetName+block.Modifier;
+			//TargetName = TargetName+block.Modifier;
 			if(block.changed)
 				rop= red;
 			else
@@ -160,68 +160,66 @@ public class EV3Panel extends JPanel {
 			else
 			{	
 				//is on the hashmap
-				if(TargetName.contains(EV3Program.LOOP_SUFFIX))
-				{//is a loop image - special
-					BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.loopLeftImage,Scale);
-//					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*( LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); 
-					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset)))); 
-					//					//need a right side also...
-					BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
-					RightImageWidth = newImage2Draw2.getWidth();
-					g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
-
-					//put the interrupt name in the middle???
-					g2d.drawString(block.interrupt,(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
-					
-					//draw all the text by hand for loops
-					TerminalItem LongItem = GetTerminalListItemValue(block.terminalItems, EV3Program.HOW_LONG);
-					if(LongItem!= null)
-					{
-						g2d.drawString(LongItem.ConfiguredValue, (int)(Scale*(block.Bound[0]+ + block.Bound[2]+XOffset+LOOP_TIMER_OFFSET_X)),(int) ( RealStretch* (Scale*(  LongItem.Bound[1]+YOffset- LOOP_OFFSET_Y))));
-					}
-					continue;
-				}
-				else if(TargetName.contains(EV3Program.LOOP_INFINITE) )
-				{//loop
-					//BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.ImageNameMap.get(TargetName),Scale);
-					//g2d.drawImage(newImage2Draw, rop, (int)(Scale* ( block.Bound[0]+XOffset)),(int)(RealStretch*(Scale*  (block.Bound[1]+YOffset))));//(steerRotationsImage, rop, steerRotationsImage,rop,  block.Bound[0],block.Bound[1]);//.drawImage(try2,  rop,  0, 0);
-					//YOffset-=100;
-					BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.loopLeftImage,Scale);
-//					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*( LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); 
-					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset-24)))); 
-					//					//need a right side also...
-					BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
-					RightImageWidth = newImage2Draw2.getWidth();
-					g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
-
-					//put the interrupt name in the middle???
-					g2d.drawString(block.interrupt,(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
-					
-					//draw all the text by hand for loops
-					TerminalItem LongItem = GetTerminalListItemValue(block.terminalItems, EV3Program.HOW_LONG);
-					if(LongItem!= null)
-					{
-						g2d.drawString(LongItem.ConfiguredValue, (int)(Scale*(block.Bound[0]+ + block.Bound[2]+XOffset+LOOP_TIMER_OFFSET_X)),(int) ( RealStretch* (Scale*(  LongItem.Bound[1]+YOffset- LOOP_OFFSET_Y))));
-					}
-					continue;
-				}
-				else
+//				if(TargetName.contains(EV3Program.LOOP_SUFFIX))
+//				{//is a loop image - special
+//					BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.loopLeftImage,Scale);
+////					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*( LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); 
+//					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  LOOP_OFFSET_Y+LOOP_OFFSET_Y+LOOP_OFFSET_Y+block.Bound[1]+YOffset)))); 
+//					//					//need a right side also...
+//					BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
+//					RightImageWidth = newImage2Draw2.getWidth();
+//					g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
+//
+//					//put the interrupt name in the middle???
+//					g2d.drawString(block.interrupt,(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
+//					
+//					//draw all the text by hand for loops
+//					TerminalItem LongItem = GetTerminalListItemValue(block.terminalItems, EV3Program.HOW_LONG);
+//					if(LongItem!= null)
+//					{
+//						g2d.drawString(LongItem.ConfiguredValue, (int)(Scale*(block.Bound[0]+ + block.Bound[2]+XOffset+LOOP_TIMER_OFFSET_X)),(int) ( RealStretch* (Scale*(  LongItem.Bound[1]+YOffset- LOOP_OFFSET_Y))));
+//					}
+//					continue;
+//				}
+//				else if(TargetName.contains(EV3Program.LOOP_INFINITE) )
+//				{//loop
+//					//BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.ImageNameMap.get(TargetName),Scale);
+//					//g2d.drawImage(newImage2Draw, rop, (int)(Scale* ( block.Bound[0]+XOffset)),(int)(RealStretch*(Scale*  (block.Bound[1]+YOffset))));//(steerRotationsImage, rop, steerRotationsImage,rop,  block.Bound[0],block.Bound[1]);//.drawImage(try2,  rop,  0, 0);
+//					//YOffset-=100;
+//					BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.loopLeftImage,Scale);
+////					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*( LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); 
+//					g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset-24)))); 
+//					//					//need a right side also...
+//					BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
+//					RightImageWidth = newImage2Draw2.getWidth();
+//					g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); // see javadoc for more info on the parameters 
+//
+//					//put the interrupt name in the middle???
+//					g2d.drawString("1",(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
+//					
+//					//draw all the text by hand for loops
+//					TerminalItem LongItem = GetTerminalListItemValue(block.terminalItems, EV3Program.HOW_LONG);
+//					if(LongItem!= null)
+//					{
+//						g2d.drawString(LongItem.ConfiguredValue, (int)(Scale*(block.Bound[0]+ + block.Bound[2]+XOffset+LOOP_TIMER_OFFSET_X)),(int) ( RealStretch* (Scale*(  LongItem.Bound[1]+YOffset- LOOP_OFFSET_Y))));
+//					}
+//					continue;
+//				}
+			//	else
 				{
-					if(block.Modifier.equals(EV3ImageManager.LOOP))
+					if(block.Modifier.equals(EV3ImageManager.LOOP)||TargetName.contains(EV3ImageManager.LOOP) )
 					{
-						//BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.ImageNameMap.get(TargetName),Scale);
-						//g2d.drawImage(newImage2Draw, rop, (int)(Scale* ( block.Bound[0]+XOffset)),(int)(RealStretch*(Scale*  (block.Bound[1]+YOffset))));//(steerRotationsImage, rop, steerRotationsImage,rop,  block.Bound[0],block.Bound[1]);//.drawImage(try2,  rop,  0, 0);
-						//YOffset-=100;
+
 						BufferedImage newImage2Draw= ev3im.scaleImage(ev3im.loopLeftImage,Scale);
-//						g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*( LOOP_OFFSET_Y+ block.Bound[1]+YOffset)))); 
-						g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset-24)))); 
-						//					//need a right side also...
+						g2d.drawImage(newImage2Draw,rop,  (int)(Scale* (block.Bound[0]+XOffset)),(int) ( RealStretch* (Scale*(  block.Bound[1]+YOffset)))); 
+						
+						//need a right side also...
 						BufferedImage newImage2Draw2 = ev3im.ImageNameMap.get(TargetName);	
 						RightImageWidth = newImage2Draw2.getWidth();
-						g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*(LOOP_OFFSET_Y+ block.Bound[1]+YOffset+20)))); // see javadoc for more info on the parameters 
+						g2d.drawImage(newImage2Draw2,rop,  (int)(Scale* (block.Bound[0]+ block.Bound[2]-RightImageWidth+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
 
 						//put the interrupt name in the middle???
-						g2d.drawString(block.interrupt,(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
+						g2d.drawString("was BI",(int)(Scale* (block.Bound[0]+ (block.Bound[2]/2)+XOffset)),(int) ( RealStretch* (Scale*( block.Bound[1]+YOffset))));
 						
 						//draw all the text by hand for loops
 						TerminalItem LongItem = GetTerminalListItemValue(block.terminalItems, EV3Program.HOW_LONG);
@@ -242,47 +240,19 @@ public class EV3Panel extends JPanel {
 			{
 				try
 				{
-					int offsetX=XOffset,offsetY=YOffset;
+					int offsetX=XOffset,offsetY=0;
 					if(terminal.ID.equals("SequenceOut")||terminal.ID.contains("Interrupts"))
 						continue;
+					offsetY =15;
 					if(terminal.ID.equals("Ports")|| terminal.ID.equals("MotorPort"))
 					{
 						offsetX +=  block.Bound[BLOCK_WIDTH]-40;
-						//						offsetY +=15;
-					}
-					else if(terminal.ID.equals("IRSeeker"))
-					{
-						offsetX += 160;
-					}
-					else if(terminal.ID.equals("Text"))
-					{
-						offsetX += 130;
-					}
-					else if( TargetName.equals("ColorCompare")&& terminal.ID.equals("Port"))
-					{
-						offsetX += 90;
-					}
-					else if(terminal.ID.equals("Port"))
-					{
-						offsetX += 60;
-					}
-					else if(TargetName.equals(EV3ImageManager.TOGGLE_INTERRUPT))
-					{
-						offsetX += 60;
-					}
-					else offsetY += 20;
-					if(block.Modifier.equals(EV3ImageManager.LOOP))
-					{
-						offsetX += (Scale* ( block.Bound[2]-RightImageWidth));//this gets added in when drawing the string:block.Bound[0]
-						offsetY = 50;
 						
 					}
-					else
-						offsetY = 0;
-//System.out.println("ID "+terminal.ID+ " value:"+terminal.ConfiguredValue);
+
+				
 					String Text2Show = terminal.ConfiguredValue.replace("1.","");
-					if(Text2Show.equals("3"))
-						System.out.println("GGG");;
+
 					if(terminal.ConfiguredValue.equals("True"))
 						Text2Show =String.format(" %c", 0x2714);
 					else if(terminal.ConfiguredValue.equals("False"))
@@ -304,7 +274,8 @@ public class EV3Panel extends JPanel {
 						g2d.setColor(Color.RED);
 					}
 
-					g2d.drawString(Text2Show, (int)(Scale*(terminal.Bound[0]+ block.Bound[0]+ offsetX)), (RealStretch* YOffset)+terminal.Bound[1]+(int)(RealStretch*(Scale*(15+block.Bound[1])+ offsetY)));
+				//before bound aggregator	g2d.drawString(Text2Show, (int)(Scale*(terminal.Bound[0]+ block.Bound[0]+ offsetX)), (RealStretch* YOffset)+terminal.Bound[1]+(int)(RealStretch*(Scale*(15+block.Bound[1])+ offsetY)));
+					g2d.drawString(Text2Show, (int)(Scale*(terminal.Bound[0]+ offsetX)), (RealStretch*( YOffset+ offsetY))+terminal.Bound[1]);
 
 					if(terminal.changed)
 					{

@@ -1,5 +1,6 @@
 package com.gmeci.ev3diff.parser.ev3reader;
 
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 import org.xml.sax.Attributes;
@@ -40,6 +41,8 @@ public class EV3ProgramHandler extends DefaultHandler {
 	private static final String WIRE="Wire";
 	private static final String JOINTS="joints";
 
+	ArrayDeque<String> BoundsList = new ArrayDeque<String>();
+	
 	EV3Program program;
 	EV3BlockItem tempBlock=new EV3BlockItem();
 	TerminalItem tempTerminalItem=tempBlock.new TerminalItem();
@@ -51,6 +54,7 @@ public class EV3ProgramHandler extends DefaultHandler {
 		program=new EV3Program();
 		insideWhile=insideWait=false;
 		insideStopCondition=false;
+		BoundsList.clear();
 	}
 
 	@Override
@@ -77,6 +81,16 @@ public class EV3ProgramHandler extends DefaultHandler {
 		if(!insideBlockDiagram)
 			return;
 
+
+		
+		String BoundsStringTest= attributes.getValue(BOUNDS_ATTR);
+		if(BoundsStringTest!= null)
+		{
+			BoundsList.addFirst(BoundsStringTest);
+		}
+		else
+			BoundsList.addFirst("");
+		
 		if(qName.equals(START_BLOCK))
 		{
 			tempBlock= new EV3BlockItem();
@@ -85,16 +99,23 @@ public class EV3ProgramHandler extends DefaultHandler {
 			tempBlock.Bound=parseBounds(BoundsString);
 			tempBlock.Target= attributes.getValue(TARGET_ATTR);
 		}
-		else if(qName.equals(PROGRAM_BLOCK)&&!insideWhile)
+		else if(qName.equals(PROGRAM_BLOCK))//&&!insideWhile)
 		{
 			tempBlock= new EV3BlockItem();
 			tempBlock.BlockPosition=BlockCount;
 			BlockCount++;
 			tempBlock.changed = getBoolean(attributes, CHANGED_ATTR);
 			tempBlock.ID = attributes.getValue(ID_ATTR);
-			String BoundsString= attributes.getValue(BOUNDS_ATTR);
-			tempBlock.Bound=parseBounds(BoundsString);
+			//String BoundsString= attributes.getValue(BOUNDS_ATTR);
+			//tempBlock.Bound=parseBounds(BoundsString);
+			
+			tempBlock.Bound=AggregateBounds(BoundsList);
+			
 			tempBlock.Target= attributes.getValue(TARGET_ATTR);
+			if(tempBlock.Target.contains("MoveD"))
+			{
+				System.out.println("Found one");
+			}
 			DetailCount=0;
 		}
 		else if(qName.equals(PROGRAM_BLOCK)&&insideWhile)
@@ -102,8 +123,6 @@ public class EV3ProgramHandler extends DefaultHandler {
 
 			if(insideStopCondition)
 			{
-				String BoundsString= attributes.getValue(BOUNDS_ATTR);
-		//		tempBlock.Bound = parseBounds(BoundsString);
 				tempBlock.Target= attributes.getValue(TARGET_ATTR);
 				if(insideWait)
 				{
@@ -123,6 +142,7 @@ public class EV3ProgramHandler extends DefaultHandler {
 		else if(qName.equals(WHILE_LOOP_METHID))
 		{
 			insideWait=false;
+			insideWhile = true;
 			String CallMethod =  attributes.getValue(CALL_TYPE_ATTR);
 			if(CallMethod.equals(CALL_TYPE_STOP_CONDITION))
 			{
@@ -133,21 +153,24 @@ public class EV3ProgramHandler extends DefaultHandler {
 		{
 
 			tempBlock= new EV3BlockItem();
-			String BoundsString= attributes.getValue(BOUNDS_ATTR);
-			tempBlock.Bound = parseBounds(BoundsString);
+		//	String BoundsString= attributes.getValue(BOUNDS_ATTR);
+		//	tempBlock.Bound = parseBounds(BoundsString);
+
+			tempBlock.Bound=AggregateBounds(BoundsList);
 		}
 		else if(qName.equals(WHILE_LOOP_BLOCK))
 		{
 			insideWait=false;
-			insideWhile = true;
 			tempBlock= new EV3BlockItem();
 			tempBlock.interrupt = attributes.getValue(INTERRUPT_NAME_ATR);
 			tempBlock.BlockPosition=BlockCount;
 			BlockCount++;
 			tempBlock.changed = getBoolean(attributes, CHANGED_ATTR);
 			tempBlock.ID = attributes.getValue(ID_ATTR);
-			String BoundsString= attributes.getValue(BOUNDS_ATTR);
-			tempBlock.Bound=parseBounds(BoundsString);
+		//	String BoundsString= attributes.getValue(BOUNDS_ATTR);
+		//	tempBlock.Bound=parseBounds(BoundsString);
+
+			tempBlock.Bound=AggregateBounds(BoundsList);
 			tempBlock.Target= attributes.getValue(TARGET_ATTR);
 			DetailCount=0;
 		}
@@ -158,9 +181,10 @@ public class EV3ProgramHandler extends DefaultHandler {
 			tempBlock= new EV3BlockItem();
 			tempBlock.Target = attributes.getValue(TARGET_ATTR)+EV3ImageManager.WAIT;
 			tempBlock.Modifier= EV3ImageManager.WAIT;
-			String BoundsString= attributes.getValue(BOUNDS_ATTR);
-			tempBlock.Bound=parseBounds(BoundsString);
+//			String BoundsString= attributes.getValue(BOUNDS_ATTR);
+//			tempBlock.Bound=parseBounds(BoundsString);
 
+			tempBlock.Bound=AggregateBounds(BoundsList);
 		}
 		else if(qName.equals(PROGRAM_BLOCK_DETAIL))
 		{
@@ -184,12 +208,16 @@ public class EV3ProgramHandler extends DefaultHandler {
 					tempTerminalItem.changed = getBoolean(attributes, CHANGED_ATTR);
 				String BoundsString = attributes.getValue(BOUNDS_ATTR);
 				tempTerminalItem.Bound = parseBounds(BoundsString);
+
+				tempTerminalItem.Bound=AggregateBounds(BoundsList);
 				tempBlock.terminalItems.add(tempTerminalItem);
 			}
 		}
 
 		super.startElement(uri, localName, qName, attributes);
 	}
+
+
 	private boolean getBoolean(Attributes attributes, String changedAttr) {
 
 		String boolValueString = attributes.getValue(changedAttr);
@@ -206,10 +234,31 @@ public class EV3ProgramHandler extends DefaultHandler {
 		return false;
 	}
 	boolean insideDetail=false;
+	
+	private int[] AggregateBounds(ArrayDeque<String> boundsList) {
+	
+		int[] totalBounds = new int[4];
+		boolean skip = false;
+		for(String boundString:boundsList)
+		{
+			int[] nextBounds=parseBounds(boundString);
+			for(int i=0;i<4;i++)
+			{
+			//	if((i==2 && !skip)|| i!=2)
+					totalBounds[i] = totalBounds[i]+ nextBounds[i];
+				
+				if(i==2 && totalBounds[i]!=0)
+					skip = true;
+			}
+		}
+		return totalBounds;
+	}
+	
+	
 	private int[] parseBounds(String boundsString) {
 		StringTokenizer st = new StringTokenizer(boundsString);
 		if(st.countTokens()!= 4)
-			return null;
+			return new int[4];
 		try
 		{
 			int[] bounds=new int[4];
@@ -227,6 +276,11 @@ public class EV3ProgramHandler extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		// TODO Auto-generated method stub
+		
+		String Bounds2Remove="";
+		if(!BoundsList.isEmpty())
+			Bounds2Remove=BoundsList.removeFirst();
+		
 		if(qName.equals(BLOCK_DIAGRAM))
 			insideBlockDiagram=false;
 
@@ -237,8 +291,20 @@ public class EV3ProgramHandler extends DefaultHandler {
 			tempBlock=null;
 			insideWhile = false;
 		}
-		else if(qName.equals(PROGRAM_BLOCK)&&!insideWhile)
+		else if(qName.equals(PROGRAM_BLOCK))//&&!insideWhile)
 		{
+			if(insideWhile )
+			{
+				//remiove these bounds???
+				int bounds2Remove[]= this.parseBounds(Bounds2Remove);
+				
+				for(int i=0;i<4;i++)
+				{
+					tempBlock.Bound[i] = tempBlock.Bound[i]- bounds2Remove[i];
+				}
+				tempBlock.Modifier= EV3ImageManager.LOOP;
+				tempBlock.Target = tempBlock.Target+ EV3ImageManager.LOOP;
+			}
 			//done reading a program block - store on the list?
 			program.programBlocks.add(tempBlock);
 			tempBlock=null;
@@ -260,17 +326,26 @@ public class EV3ProgramHandler extends DefaultHandler {
 		}
 		else if(qName.equals(WHILE_LOOP_BLOCK))
 		{
-			insideWhile = false;
 			//done reading a program block - store on the list?
-			if(tempBlock!= null)
-			{
-				program.programBlocks.add(tempBlock);
-				tempBlock=null;
-			}
+//			if(tempBlock!= null)
+//			{
+//				program.programBlocks.add(tempBlock);
+//				tempBlock=null;
+//			}
 		}
 		else if(qName.equals(WHILE_LOOP_METHID))
 		{
+			insideWhile = false;
+			//moved from while_loop_block. - we lose the while loop if we don't 
 			insideStopCondition=false;
+			//done reading a program block - store on the list?
+			if(tempBlock!= null)
+			{
+				tempBlock.Modifier= EV3ImageManager.LOOP;
+				tempBlock.Target = tempBlock.Target+ EV3ImageManager.LOOP;
+				program.programBlocks.add(tempBlock);
+				tempBlock=null;
+			}
 		}
 		else if(qName.equals(PROGRAM_BLOCK_DETAIL))
 		{

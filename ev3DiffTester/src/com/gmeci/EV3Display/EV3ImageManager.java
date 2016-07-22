@@ -125,8 +125,8 @@ public class EV3ImageManager {
 			ImageNameMap.put(EV3Program.PLAYSOUND_STOP, PlaySoundStop);			
 			
 			loopLeftImage = ImageIO.read(getClass().getResource( "/resources/loop_left.PNG" ));
-			loopInfiniteImage = ImageIO.read(getClass().getResource( "/resources/loop_right_time.PNG" ));
-			ImageNameMap.put("StopNever", loopInfiniteImage);	
+			loopInfiniteImage = ImageIO.read(getClass().getResource( "/resources/loop_right_infinite.PNG" ));
+			ImageNameMap.put("StopNever"+LOOP, loopInfiniteImage);	
 
 			loopTimeCompareImage = ImageIO.read(getClass().getResource( "/resources/loop_right_infinite.PNG" ));
 			ImageNameMap.put(EV3Program.LOOP_TIME_COMPARE, loopTimeCompareImage);	
