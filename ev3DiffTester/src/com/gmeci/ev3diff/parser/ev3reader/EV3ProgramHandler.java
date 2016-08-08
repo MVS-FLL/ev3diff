@@ -42,17 +42,19 @@ public class EV3ProgramHandler extends DefaultHandler {
 	private static final String JOINTS="joints";
 
 	ArrayDeque<String> BoundsList = new ArrayDeque<String>();
+	ArrayDeque<Boolean> InsideWhileQueue = new ArrayDeque<Boolean>();
+	ArrayDeque<Boolean> InsideSwitchQueue = new ArrayDeque<Boolean>();
 	
 	EV3Program program;
 	EV3BlockItem tempBlock=new EV3BlockItem();
 	TerminalItem tempTerminalItem=tempBlock.new TerminalItem();
-	boolean insideWhile,insideWait;
 	@Override
 	public void startDocument() throws SAXException {
 		// TODO Auto-generated method stub
 		super.startDocument();
 		program=new EV3Program();
-		insideWhile=insideWait=false;
+		InsideWhileQueue.push(false);
+		InsideSwitchQueue.push(false);
 		insideStopCondition=false;
 		BoundsList.clear();
 	}
@@ -99,50 +101,23 @@ public class EV3ProgramHandler extends DefaultHandler {
 			tempBlock.Bound=parseBounds(BoundsString);
 			tempBlock.Target= attributes.getValue(TARGET_ATTR);
 		}
-		else if(qName.equals(PROGRAM_BLOCK))//&&!insideWhile)
+		else if(qName.equals(PROGRAM_BLOCK))
 		{
 			tempBlock= new EV3BlockItem();
 			tempBlock.BlockPosition=BlockCount;
 			BlockCount++;
 			tempBlock.changed = getBoolean(attributes, CHANGED_ATTR);
 			tempBlock.ID = attributes.getValue(ID_ATTR);
-			//String BoundsString= attributes.getValue(BOUNDS_ATTR);
-			//tempBlock.Bound=parseBounds(BoundsString);
 			
-			tempBlock.Bound=AggregateBounds(BoundsList);
+			tempBlock.Bound=AggregateBounds(BoundsList, false);
 			
 			tempBlock.Target= attributes.getValue(TARGET_ATTR);
-			if(tempBlock.Target.contains("MoveD"))
-			{
-				System.out.println("Found one");
-			}
 			DetailCount=0;
-		}
-		else if(qName.equals(PROGRAM_BLOCK)&&insideWhile)
-		{//this is for a while loop...
-
-			if(insideStopCondition)
-			{
-				tempBlock.Target= attributes.getValue(TARGET_ATTR);
-				if(insideWait)
-				{
-
-					tempBlock.Modifier= EV3ImageManager.WAIT;
-					tempBlock.Target=tempBlock.Target+EV3ImageManager.WAIT;
-				}
-				else
-				{
-
-					tempBlock.Modifier= EV3ImageManager.LOOP;
-					tempBlock.Target=tempBlock.Target+EV3ImageManager.LOOP;
-				}
-				System.out.println("Modified_target = "+tempBlock.Target);
-			}
 		}
 		else if(qName.equals(WHILE_LOOP_METHID))
 		{
-			insideWait=false;
-			insideWhile = true;
+			InsideWhileQueue.push(true);
+			InsideSwitchQueue.push(false);
 			String CallMethod =  attributes.getValue(CALL_TYPE_ATTR);
 			if(CallMethod.equals(CALL_TYPE_STOP_CONDITION))
 			{
@@ -152,15 +127,18 @@ public class EV3ProgramHandler extends DefaultHandler {
 		else if(qName.equals(SWITCH_METHOD_CALL))
 		{
 
+			InsideWhileQueue.push(false);
+			InsideSwitchQueue.push(true);
 			tempBlock= new EV3BlockItem();
-		//	String BoundsString= attributes.getValue(BOUNDS_ATTR);
-		//	tempBlock.Bound = parseBounds(BoundsString);
+			String BoundsString= attributes.getValue(BOUNDS_ATTR);
+			tempBlock.Bound = parseBounds(BoundsString);
 
-			tempBlock.Bound=AggregateBounds(BoundsList);
+			tempBlock.Target = attributes.getValue(TARGET_ATTR)+EV3ImageManager.SWITCH;
+			tempBlock.changed = getBoolean(attributes, CHANGED_ATTR);
+			tempBlock.Bound=AggregateBounds(BoundsList, false);
 		}
 		else if(qName.equals(WHILE_LOOP_BLOCK))
 		{
-			insideWait=false;
 			tempBlock= new EV3BlockItem();
 			tempBlock.interrupt = attributes.getValue(INTERRUPT_NAME_ATR);
 			tempBlock.BlockPosition=BlockCount;
@@ -170,21 +148,23 @@ public class EV3ProgramHandler extends DefaultHandler {
 		//	String BoundsString= attributes.getValue(BOUNDS_ATTR);
 		//	tempBlock.Bound=parseBounds(BoundsString);
 
-			tempBlock.Bound=AggregateBounds(BoundsList);
+			tempBlock.Bound=AggregateBounds(BoundsList, false);
 			tempBlock.Target= attributes.getValue(TARGET_ATTR);
 			DetailCount=0;
 		}
 		else if(qName.equals(WAIT_FOR_METHID))
 		{
-			insideWait=true;
-			insideWhile = true;
+
+			InsideWhileQueue.push(false);
+			InsideSwitchQueue.push(true);
+			
 			tempBlock= new EV3BlockItem();
 			tempBlock.Target = attributes.getValue(TARGET_ATTR)+EV3ImageManager.WAIT;
 			tempBlock.Modifier= EV3ImageManager.WAIT;
 //			String BoundsString= attributes.getValue(BOUNDS_ATTR);
 //			tempBlock.Bound=parseBounds(BoundsString);
 
-			tempBlock.Bound=AggregateBounds(BoundsList);
+			tempBlock.Bound=AggregateBounds(BoundsList, false);
 		}
 		else if(qName.equals(PROGRAM_BLOCK_DETAIL))
 		{
@@ -206,10 +186,10 @@ public class EV3ProgramHandler extends DefaultHandler {
 				tempTerminalItem.ID = attributes.getValue(ID_ATTR);
 				if(!tempTerminalItem.changed)
 					tempTerminalItem.changed = getBoolean(attributes, CHANGED_ATTR);
-				String BoundsString = attributes.getValue(BOUNDS_ATTR);
-				tempTerminalItem.Bound = parseBounds(BoundsString);
+			//	String BoundsString = attributes.getValue(BOUNDS_ATTR);
+			//	tempTerminalItem.Bound = parseBounds(BoundsString);
 
-				tempTerminalItem.Bound=AggregateBounds(BoundsList);
+				tempTerminalItem.Bound=AggregateBounds(BoundsList,true);
 				tempBlock.terminalItems.add(tempTerminalItem);
 			}
 		}
@@ -235,8 +215,9 @@ public class EV3ProgramHandler extends DefaultHandler {
 	}
 	boolean insideDetail=false;
 	
-	private int[] AggregateBounds(ArrayDeque<String> boundsList) {
+	private int[] AggregateBounds(ArrayDeque<String> boundsList, boolean Allowskip) {
 	
+		Allowskip= true;
 		int[] totalBounds = new int[4];
 		boolean skip = false;
 		for(String boundString:boundsList)
@@ -244,10 +225,10 @@ public class EV3ProgramHandler extends DefaultHandler {
 			int[] nextBounds=parseBounds(boundString);
 			for(int i=0;i<4;i++)
 			{
-			//	if((i==2 && !skip)|| i!=2)
+				if((i==2 && !skip)|| i!=2)
 					totalBounds[i] = totalBounds[i]+ nextBounds[i];
 				
-				if(i==2 && totalBounds[i]!=0)
+				if(i==2 && totalBounds[i]!=0&& Allowskip)
 					skip = true;
 			}
 		}
@@ -289,19 +270,19 @@ public class EV3ProgramHandler extends DefaultHandler {
 			//done reading start block - store on the list?
 			program.programBlocks.add(tempBlock);
 			tempBlock=null;
-			insideWhile = false;
 		}
 		else if(qName.equals(PROGRAM_BLOCK))//&&!insideWhile)
 		{
-			if(insideWhile )
+			
+			if(InsideWhileQueue.element() )
 			{
 				//remiove these bounds???
 				int bounds2Remove[]= this.parseBounds(Bounds2Remove);
 				
-				for(int i=0;i<4;i++)
-				{
-					tempBlock.Bound[i] = tempBlock.Bound[i]- bounds2Remove[i];
-				}
+//				for(int i=0;i<4;i++)
+//				{
+//					tempBlock.Bound[i] = tempBlock.Bound[i]- bounds2Remove[i];
+//				}
 				tempBlock.Modifier= EV3ImageManager.LOOP;
 				tempBlock.Target = tempBlock.Target+ EV3ImageManager.LOOP;
 			}
@@ -312,12 +293,11 @@ public class EV3ProgramHandler extends DefaultHandler {
 		}
 		else if(qName.equals(WAIT_FOR_METHID))
 		{
-			insideWhile = false;
+
+			InsideWhileQueue.pop();
+			InsideSwitchQueue.pop();
 			program.programBlocks.add(tempBlock);
 			tempBlock=null;
-			insideWhile = false;
-
-			insideWait=false;
 		}
 		else if(qName.equals(SWITCH_METHOD_CALL))
 		{
@@ -335,7 +315,10 @@ public class EV3ProgramHandler extends DefaultHandler {
 		}
 		else if(qName.equals(WHILE_LOOP_METHID))
 		{
-			insideWhile = false;
+
+			InsideWhileQueue.pop();
+			InsideSwitchQueue.pop();
+			
 			//moved from while_loop_block. - we lose the while loop if we don't 
 			insideStopCondition=false;
 			//done reading a program block - store on the list?

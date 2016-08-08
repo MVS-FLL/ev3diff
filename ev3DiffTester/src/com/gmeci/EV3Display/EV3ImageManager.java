@@ -16,6 +16,7 @@ public class EV3ImageManager {
 	static final String TOGGLE_INTERRUPT = "ToggleInterrupt";
 	public static final String WAIT = "wait";
 	public static final String LOOP = "loop";
+	public static final String SWITCH = "switch";
 	BufferedImage startImage,myBlockImage, unknownImage;
 	BufferedImage largeMotorRotationsImage, mediumMotorRotationsImage, steerRotationsImage, tankRotationsImage, lightsImage, soundImage;
 	BufferedImage largeMotorDegreesImage, mediumDegreesImage, steerDegreesImage,tankDegreesImage;
@@ -153,6 +154,35 @@ public class EV3ImageManager {
 			BufferedImage loopUltrasonicINImage = ImageIO.read(getClass().getResource( "/resources/loop_right_distance_in.PNG" ));
 			ImageNameMap.put("DistanceInchesCompare"+LOOP, loopUltrasonicINImage);
 			
+			//switchs
+			BufferedImage switchColorValueImage = ImageIO.read(getClass().getResource( "/resources/switch_color_measure.PNG" ));
+			ImageNameMap.put("ColorCompareswitch", switchColorValueImage);
+			BufferedImage switchColorCompareImage = ImageIO.read(getClass().getResource( "/resources/switch_color_compare.PNG" ));
+			ImageNameMap.put("ColorValueswitch", switchColorCompareImage);
+			BufferedImage switchTouchImage = ImageIO.read(getClass().getResource( "/resources/switch_key.PNG" ));
+			ImageNameMap.put("ButtonValueswitch", switchTouchImage);
+			BufferedImage switchTouchButtonImage = ImageIO.read(getClass().getResource( "/resources/switch_button.PNG" ));
+			ImageNameMap.put("TouchCompareswitch", switchTouchButtonImage);
+			BufferedImage switchTimerImage = ImageIO.read(getClass().getResource( "/resources/switch_timer.PNG" ));
+			ImageNameMap.put("TimerCompareswitch", switchTimerImage);
+			BufferedImage switchDistanceInchesImage = ImageIO.read(getClass().getResource( "/resources/switch_ultra_in.PNG" ));
+			ImageNameMap.put("DistanceInchesCompareswitch", switchDistanceInchesImage);
+			BufferedImage switchDistancecmImage = ImageIO.read(getClass().getResource( "/resources/switch_ultra_cm.PNG" ));
+			ImageNameMap.put("DistanceCMCompareswitch", switchDistancecmImage);
+			BufferedImage switchNumericImage = ImageIO.read(getClass().getResource( "/resources/switch_numeric.PNG" ));
+			ImageNameMap.put("CaseSelector_Numericswitch", switchNumericImage);
+			BufferedImage switchMotorRotationsImage = ImageIO.read(getClass().getResource( "/resources/switch_motor_rotations.PNG" ));
+			ImageNameMap.put("RotationRotationsCompareswitch", switchMotorRotationsImage);
+			BufferedImage switchGyroRateImage = ImageIO.read(getClass().getResource( "/resources/switch_gyro_rate.PNG" ));
+			ImageNameMap.put("GyroRateCompareswitch", switchGyroRateImage);
+			BufferedImage switchGyroAngleImage = ImageIO.read(getClass().getResource( "/resources/switch_gyro_angle.PNG" ));
+			ImageNameMap.put("GyroAngleCompareswitch", switchGyroAngleImage);
+			BufferedImage switchMotorDEgreesImage = ImageIO.read(getClass().getResource( "/resources/switch_motor_degrees.PNG" ));
+			ImageNameMap.put("RotationDegreesCompareswitch", switchMotorDEgreesImage);
+			BufferedImage switchBooleanImage = ImageIO.read(getClass().getResource( "/resources/switch_logic.PNG" ));
+			ImageNameMap.put("CaseSelector_Booleanswitch", switchBooleanImage);
+			
+			
 
 			wait_color = ImageIO.read(getClass().getResource( "/resources/wait_color_compare.PNG" ));
 			ImageNameMap.put("ColorCompare"+WAIT, wait_color);	
@@ -180,9 +210,11 @@ public class EV3ImageManager {
 			
 			interrupt = ImageIO.read(getClass().getResource( "/resources/interrupt.PNG" ));
 			ImageNameMap.put(TOGGLE_INTERRUPT, interrupt);	
-			
+
 			Yellow_GyroDeg = ImageIO.read(getClass().getResource( "/resources/gyro_degrees.PNG" ));
-			ImageNameMap.put(EV3Program.YELLOW_GYRO_DEGREES, Yellow_GyroDeg);			
+			ImageNameMap.put(EV3Program.YELLOW_GYRO_DEGREES, Yellow_GyroDeg);
+			BufferedImage Yellow_GyroReset = ImageIO.read(getClass().getResource( "/resources/gyro_reset.PNG" ));
+			ImageNameMap.put("GyroReset", Yellow_GyroReset);			
 			Yellow_Button = ImageIO.read(getClass().getResource( "/resources/button_value.PNG" ));
 			ImageNameMap.put(EV3Program.YELLOW_BUTTON, Yellow_Button);			
 			Yellow_Color = ImageIO.read(getClass().getResource( "/resources/color_value.PNG" ));

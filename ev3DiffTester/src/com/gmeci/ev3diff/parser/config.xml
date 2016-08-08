@@ -1,0 +1,24 @@
+<config enableLog = false>
+    <terminal>
+        <terminalIP value = "192.168.1.4" help="the IP address of the radio itself" />
+        <terminalport value = "1024" help="decimal integer port the radio is listening on" />
+        <ndlFile value="c:\temp\ndl.mds" help = "the path and filename to a valid NDL file"/>
+        <cryptoDay value="calculate" help = "calculate, force_even, force_odd"/>
+        <power value="5" help = "power level from 0 to 10 decimap"/>
+        
+            
+    </terminal>
+    <platform>
+        <callsign value="hg01" help="this 4 character value can contain letters or numbers" />
+        <freq value="341.12" help="3 decimal digits . 2 decimal digits " />
+        <mode1 value="123" help="octal 3 digit number" />
+        <mode2 value="234" help="octal 3 digit number" />
+        <mode3 value="345" help="octal 3 digit number" />
+        
+        <spiNPG value="19" help="Net Participation Group- decimal" />
+        <chatNPG value="19" help="Net Participation Group- decimal" />
+        <taskNPG value="19" help="Net Participation Group- decimal" />
+        <imageNPG value="19" help="Net Participation Group- decimal" />
+        <stn value="4123" help="octal unique track numbebr" />
+        </platform>
+</config>

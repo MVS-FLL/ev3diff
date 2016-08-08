@@ -186,15 +186,15 @@ public class EV3Frame extends JFrame {
 				EV3Frame.this.requestFocus();
 			}});
 		verticalBox.add(btnNewButton_1);
-		  JSlider slider = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+		  JSlider slider = new JSlider(JSlider.VERTICAL, 0, 200, 0);
 
-		    slider.setMinorTickSpacing(2);
-		    slider.setMajorTickSpacing(10);
+		    slider.setMinorTickSpacing(20);
+		    slider.setMajorTickSpacing(40);
 		    slider.setPaintTicks(true);
 		    slider.setPaintLabels(true);
 
 		    // We'll just use the standard numeric labels for now...
-		    slider.setLabelTable(slider.createStandardLabels(10));
+		    slider.setLabelTable(slider.createStandardLabels(50));
 
 		    verticalBox.add(slider);
 		    slider.addChangeListener(new ChangeListener(){
@@ -327,11 +327,11 @@ public class EV3Frame extends JFrame {
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub;
 			int key= e.getKeyCode();
-			if(key==KeyEvent.VK_PAGE_UP)
+			if(key==KeyEvent.VK_PAGE_UP|| key=='=' || key == '+')
 			{
 				ev3DisplayPanel.Zoom(false);
 			}
-			else if(key==KeyEvent.VK_PAGE_DOWN)
+			else if(key==KeyEvent.VK_PAGE_DOWN|| key =='-')
 			{
 				ev3DisplayPanel.Zoom(true);
 			}
